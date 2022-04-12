@@ -24,9 +24,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
-        "preferred-install": "dist",
         "sort-packages": true,
-        "optimize-autoloader": true
     },
     "require": {
         "php": "^8.0.2"
