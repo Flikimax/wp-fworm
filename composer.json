@@ -24,7 +24,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
-        "sort-packages": true,
+        "sort-packages": true
     },
     "require": {
         "php": "^8.0.2"
