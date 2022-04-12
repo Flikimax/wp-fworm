@@ -1,6 +1,7 @@
 {
     "name": "flikimax/wp-fworm",
     "description": "ORM para WordPress.",
+    "version": "0.0.1",
     "keywords": [
         "wordpress",
         "wp",
