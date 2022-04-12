@@ -214,37 +214,7 @@ Trait Properties
      */
     public string $query = '';
 
-
-
-    // public function __set($propiedad, $valor){
-
-    //     if ( $propiedad != 'wpdb' ) {
-
-    //         if (  ) {
-
-    //         }
-
-    //         echo "<pre>propiedad: ";
-    //         print_r( $propiedad );
-    //         echo "</pre>";
     
-    //         echo "<pre>valor: ";
-    //         print_r( $valor );
-    //         echo "</pre>";
-
-    //     }
-
-
-    //     return $this->$propiedad = $valor;
-    // }
-
-    // public function __get($propiedad){
-    //     // if (property_exists($this, $propiedad)) {
-    //         return $this->$propiedad;
-    //     // }
-    // }
-
-
 }
 
 

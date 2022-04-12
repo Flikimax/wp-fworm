@@ -8,23 +8,8 @@ namespace Fworm\Builder;
 
 Trait Where
 {
-    // [type] => Basic | between | in | notIn | like | notLike | between | notBetween | isNull | isNotNull | isEmpty | isNotEmpty | isTrue | isFalse | is
-    // [column] => post_status
-    // [operator] => =
-    // [value] => publish
-    // [boolean] => and
-    // [Not] => false|true
-
-
-
-    public static function casa()
-    {
-        return 'casa';
-    }
-
-
     /**
-     * Añade un where básico a la consulta.
+     * Añade un where básico para la consulta.
      *
      * Caso 1:
      * Example::where( ['id' => 2, 'name' => 'Flikimax'] );
@@ -43,6 +28,8 @@ Trait Where
      * 
      * Caso 4 (default):
      * Example::where( 'id', '=', 2 );
+     * Example::where( 'id', '=', 2, 'or' );
+     * Example::where( 'id', '=', 2, 'and' );
      * 
      * Encadenamiento.
      * Example::where( 'id', '2')->where('name', '=', 'Flikimax' );
@@ -61,10 +48,6 @@ Trait Where
         // recibido cuando el método fue llamado y lo pasaremos al where anidado.
 
         # Caso 1:
-        // * Example::where( ['id' => 2, 'name' => 'Flikimax'] );
-        // * Example::where( ['id' => 2, 'name' => 'Flikimax'], 'or' );
-        // * Example::where( ['id' => 2, 'name' => 'Flikimax'], '<=' );
-        // * Example::where( ['id' => 2, 'name' => 'Flikimax'], '<=', 'or' );
         if ( is_array($column) ) {
             if ( $operator && $this->orAndValidate($operator, true) ) {
                 $boolean = $operator;
@@ -87,10 +70,6 @@ Trait Where
         }
 
         # Caso 2:
-        // * Example::where( 'id', [1, 2, 3] );
-        // * Example::where( 'id', [1, 2, 3], 'or' );
-        // * Example::where( 'id', [1, 2, 3], '<=' );
-        // * Example::where( 'id', [1, 2, 3], '<=', 'or' );
         if ( is_string($column) && is_array($operator) ) {
             $opt = '=';
             if ( $value && $this->orAndValidate($value, true) ) {
@@ -109,7 +88,6 @@ Trait Where
         }
 
         # Caso 3:
-        // * Example::where( 'id', 2 );
         if ( is_string($column) && !$value ) {
             if ( !in_array($operator, $this->operators) ) {
                 $value = $operator;
@@ -118,7 +96,6 @@ Trait Where
         }
 
         # Caso 4 (default):
-        // * Example::where( 'id', '=', 2 );
         if ( !in_array($operator, $this->operators) ) {
             $operator = '=';
         }
@@ -128,166 +105,182 @@ Trait Where
         return $this;
     }
 
+
+    # =============================== # 
+    # =========== BETWEEN =========== #
+    # =============================== # 
+
     /**
+     * Añade un where tipo between para la consulta.
+     * 
      * Filtra los elementos de forma que el valor de la clave dada esté entre los valores dados.
      *
-     * @param  string   $key
-     * @param  iterable $values
-     * @return static
+     * @param  string $key
+     * @param  array  $values
+     * @param  string $boolean
+     * @return $this
      */
-    protected function whereBetween(string $key, iterable $values, string $boolean = 'and')
+    protected function whereBetween(string $key, array $values, string $boolean = 'and')
     {
+        $count = count($values);
+        if ( $count < 2 ) {
+            return $this;
+        } else if ( $count > 2 ) {
+            # Solo se toman los primeros 2 elementos.
+            $values = array_slice($values, 0, 2);
+        }
+        
+        $boolean = $this->orAndValidate($boolean, true) ? $this->orAndValidate($boolean) : 'and';
+
         $this->wheres[] = [
-            'type' => 'between',
-            'column' => $key,
-            'values' => $values,
+            'type'    => 'between',
+            'column'  => $key,
+            'values'  => $values,
             'boolean' => $boolean,
-            'not' => false,
+            'not'     => false,
         ];
 
         return $this;
     }
 
     /**
+     * Añade un where tipo not between para la consulta.
+     * 
      * Filtra los elementos de forma que el valor de la clave dada no se encuentre entre los valores dados.
      *
-     * @param  string  $key
-     * @param  \Illuminate\Contracts\Support\Arrayable|iterable  $values
-     * @return static
+     * @param  string $key
+     * @param  array  $values
+     * @param  string $boolean
+     * @return $this
      */
-    protected function whereNotBetween($key, $values)
+    protected function whereNotBetween(string $key, array $values, string $boolean = 'and')
     {
+        $this->whereBetween($key, $values, $boolean);
+        $this->wheres[ count($this->wheres) - 1 ]['not'] = true;
+
+        return $this;
+    }
+
+    # ============================ # 
+    # =========== NULL =========== #
+    # ============================ # 
+
+    /**
+     * Añade un where tipo null para la consulta.
+     * 
+     * Filtra los elementos en los que el valor de la clave dada es nulo.
+     *
+     * @param string $column
+     * @param string $boolean
+     * @return $this
+     */
+    protected function whereNull(string $column, string $boolean = 'and') : object
+    {
+        $boolean = $this->orAndValidate($boolean, true) ? $this->orAndValidate($boolean) : 'and';
         $this->wheres[] = [
-            'type' => 'not between',
-            'column' => $key,
-            'values' => $values,
+            'type'    => 'null',
+            'column'  => $column,
             'boolean' => $boolean,
-            'not' => true,
+            'not'     => false,
         ];
 
         return $this;
     }
 
+    /**
+     * Añade un where tipo not null para la consulta.
+     * 
+     * Filtra los elementos en los que el valor de la clave dada no es nulo.
+     *
+     * @param string $column
+     * @param string $boolean
+     * @return $this
+     */
+    protected function whereNotNull(string $column, string $boolean = 'and')
+    {
+        $this->whereNull($column, $boolean);
+        $this->wheres[ count($this->wheres) - 1 ]['not'] = true;
 
+        return $this;
+    }
 
-    // public function whereType(string $type, int $count = 1)
-    // {
-    //     $wheres = array_reverse($this->wheres);
-
-    //     for ($i=0; $i <= $count; $i++) { 
-    //         $this->wheres[$i]['type'] = $type;
-    //     }
-
-    // }
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // if (! function_exists('data_get')) {
-        /**
-         * Get an item from an array or object using "dot" notation.
-         *
-         * @param  mixed  $target
-         * @param  string|array|int|null  $key
-         * @param  mixed  $default
-         * @return mixed
-         */
-        function data_get($target, $key, $default = null)
-        {
-            if (is_null($key)) {
-                return $target;
-            }
-    
-            $key = is_array($key) ? $key : explode('.', $key);
-    
-            foreach ($key as $i => $segment) {
-                unset($key[$i]);
-    
-                if (is_null($segment)) {
-                    return $target;
-                }
-    
-                if ($segment === '*') {
-                    if ($target instanceof Collection) {
-                        $target = $target->all();
-                    } elseif (! is_iterable($target)) {
-                        return value($default);
-                    }
-    
-                    $result = [];
-    
-                    foreach ($target as $item) {
-                        $result[] = data_get($item, $key);
-                    }
-    
-                    return in_array('*', $key) ? Arr::collapse($result) : $result;
-                }
-    
-                if (Arr::accessible($target) && Arr::exists($target, $segment)) {
-                    $target = $target[$segment];
-                } elseif (is_object($target) && isset($target->{$segment})) {
-                    $target = $target->{$segment};
-                } else {
-                    return value($default);
-                }
-            }
-    
-            return $target;
-        }
-    // }
-
+    # ========================== # 
+    # =========== IN =========== #
+    # ========================== # 
 
     /**
-     * Filter items where the value for the given key is null.
+     * Añade un where tipo in para la consulta.
+     * 
+     * Filtra los elementos en los que los valores coincidan.
+     *
+     * @param string $column
+     * @param array  $values
+     * @param string $boolean
+     * @return $this
+     */
+    protected function whereIn(string $column, array $values, string $boolean = 'and') : object
+    {
+        $boolean = $this->orAndValidate($boolean, true) ? $this->orAndValidate($boolean) : 'and';
+
+        $this->wheres[] = [
+            'type'    => 'in',
+            'column'  => $column,
+            'values'  => $values,
+            'boolean' => $boolean,
+            'not'     => false,
+        ];
+
+        return $this;
+    }
+
+    /**
+     * Añade un where tipo not in para la consulta.
+     * 
+     * Filtra los elementos en los que los valores no coincidan.
      *
      * @param  string|null  $key
      * @return static
      */
-    public function whereNull($key = null)
+    protected function whereNotIn(string $column, array $values, string $boolean = 'and')
     {
-        return $this->whereStrict($key, null);
+        $this->whereIn($column, $values, $boolean);
+        $this->wheres[ count($this->wheres) - 1 ]['not'] = true;
+
+        return $this;
     }
 
-    /**
-     * Filter items where the value for the given key is not null.
-     *
-     * @param  string|null  $key
-     * @return static
-     */
-    public function whereNotNull($key = null)
-    {
-        return $this->where($key, '!==', null);
-    }
+    # ======================================= # 
+    # =========== POR IMPLEMENTAR =========== #
+    # ======================================= #
 
-
-    // protected function whereBetween(string $column, array $values)
-    // {
-        
-    // }
-
-    // whereBetween
-    // whereNotBetween
-
-    // whereIn
-    // whereNotIn
-
-    // whereNull
-    // whereNotNull
-
+    # ============================ # 
+    # =========== Date =========== #
+    # ============================ # 
     // whereDate
+
+    # =========================== # 
+    # =========== Day =========== #
+    # =========================== # 
     // whereDay('created_at', '31')
+
+    # ============================= # 
+    # =========== Month =========== #
+    # ============================= # 
     // whereMonth('created_at', '12')
+
+    # ============================ # 
+    # =========== Year =========== #
+    # ============================ # 
     // whereYear('created_at', '2016')
+
+    # ============================ # 
+    # =========== Time =========== #
+    # ============================ # 
     // whereTime('created_at', '=', '11:20')
+    
+    # ============================== # 
+    # =========== Column =========== #
+    # ============================== # 
     // whereColumn('first_name', 'last_name')
     // whereColumn('updated_at', '>', 'created_at')
     // whereColumn([
@@ -298,6 +291,21 @@ Trait Where
 
 
 
+    
+
+
+
+    # =============================== # 
+    # =========== HELPERS =========== #
+    # =============================== #
+
+    /**
+     * Valida si un valor es OR o AND.
+     *
+     * @param mixed $value Valor a validar.
+     * @param bool $check
+     * @return string|bool
+     **/
     public function orAndValidate(mixed $value, bool $check = false) : string|bool
     {
         if ( is_string($value) && (strtolower(trim($value)) === 'or' || strtolower(trim($value)) === 'and') ) {
@@ -306,7 +314,5 @@ Trait Where
 
         return false;
     }
-
-
 
 }

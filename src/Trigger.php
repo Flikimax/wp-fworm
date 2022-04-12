@@ -19,9 +19,12 @@ Trait Trigger
      **/
     protected function get(string $output = 'OBJECT') : array|object|null
     {
+        $hasWhere = ( count( $this->wheres ) > 0 ) ? true : false;
+        
         return $this->results( 
             $output,
             'buildSelect',
+            [$hasWhere]
         );
     }
     

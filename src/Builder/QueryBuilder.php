@@ -15,7 +15,9 @@ Trait QueryBuilder
     {
         $this->query = "SELECT * FROM {$this->table} ";
         if ( $where ) {
-            $this->query .= 'WHERE ' . $this->buildWhere();
+            if ( $whereString = $this->buildWhere() ) {
+                $this->query .= 'WHERE ' . $this->buildWhere();
+            }
         }
 
         $query = $this->query;
@@ -25,8 +27,16 @@ Trait QueryBuilder
     }
 
     
-    # WHERES
-    public function buildWhere()
+    # ============================== # 
+    # =========== WHERES =========== #
+    # ============================== # 
+
+    /**
+     * Construye la clausula WHERE para el Query dependiendo del tipo.
+     *
+     * @return string
+     **/
+    public function buildWhere() : string
     {
         $closure = '';
 
@@ -54,23 +64,71 @@ Trait QueryBuilder
         return $closure;
     }
 
+    /**
+     * Where tipo: basic.
+     *
+     * @param array $where 
+     * @return string
+     **/
     public function buildBasicWhere(array $where) : string
     {
         return "{$where['column']} {$where['operator']} '{$where['value']}' {$where['boolean']} ";
     }
 
-    
+    /**
+     * Where tipo: between.
+     *
+     * @param array $where 
+     * @return string
+     **/
     public function buildBetweenWhere(array $where) : string
     {
-        // WHERE fecha BETWEEN '2020-05-01' AND '2022-06-01'
-        // WHERE fecha NOT BETWEEN 1997 AND 2022;
+        $not = $this->whereNotValidate( $where );
+        return "{$where['column']} {$not} {$where['type']} '{$where['values'][0]}' AND '{$where['values'][1]}' {$where['boolean']} ";
+    }
+    
+    /**
+     * Where tipo: null.
+     *
+     * @param array $where 
+     * @return string
+     **/
+    public function buildNullWhere(array $where) : string
+    {
+        $not = $this->whereNotValidate( $where );
+        return "{$where['column']} IS {$not} {$where['type']} {$where['boolean']} ";
+    }
 
-        $not = $where['not'] ? 'NOT' : '';
-        return "{$where['column']} {$not} {$where['type']} '{$where['values'][1]}' AND '{$where['values'][0]}' {$where['boolean']} ";
+    /**
+     * Where tipo: in.
+     *
+     * @param array $where 
+     * @return string
+     **/
+    public function buildInWhere(array $where) : string
+    {
+        if ( !is_array($where['values']) || count($where['values']) <= 0 ) {
+            return '';
+        }
+
+        $values = implode(', ', $where['values']);
+        $not = $this->whereNotValidate( $where );
+
+        return "{$where['column']} {$not} {$where['type']} ({$values}) {$where['boolean']} ";
     }
 
 
-    
+
+    # =============================== # 
+    # =========== HELPERS =========== #
+    # =============================== #
+
+    /**
+     * Reinicia una propiedad de la clase, buscando su tipo.
+     *
+     * @param string $property Nombre de la propiedad a reiniciar.
+     * @return bool
+     **/
     protected function resetProperty(string $property) : bool
     {
         if ( property_exists($this, $property) ) {
@@ -79,12 +137,12 @@ Trait QueryBuilder
                 ->getName();
 
             $this->{$property} = match ($type) {
-                'string' => '',
                 'object' => new stdClass(),
-                'array' => [],
-                'int' => 0,
-                'bool' => false,
-                'null' => null,
+                'bool'   => false,
+                'null'   => null,
+                'string' => '',
+                'array'  => [],
+                'int'    => 0,
             };
 
             return true;
@@ -93,5 +151,19 @@ Trait QueryBuilder
         return false;
     }
 
+    /**
+     * Verifica si un where tiene una condición not.
+     *
+     * @param array $where 
+     * @return string
+     **/
+    protected function whereNotValidate( array $where ) : string
+    {
+        if ( !isset($where['not']) || $where['not'] === false ) {
+            return '';
+        }
+
+        return empty( $where['not'] ) ? '' : 'NOT';
+    }
 
 }
