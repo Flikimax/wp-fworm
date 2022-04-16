@@ -10,15 +10,7 @@ use Fworm\MainModel as Model;
 
 class Pruebas extends Model
 {
-    public string $primaryKey = 'ID';
-
-    // public $prefix = true;
-    // public $prefix = false;
-    public $prefix = 'fkm_';
-    // public $prefix = '';
-
-
-
-
+    protected string $primaryKey = 'Id';
+    protected string $prefix = 'fkm_';
 
 }

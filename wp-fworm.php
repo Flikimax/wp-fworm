@@ -18,3 +18,5 @@ define('WP_FWORM_NAME', 'WP Fworm');
 define('WP_FWORM_VERSION', '0.1');
 
 require_once __DIR__ . '/vendor/autoload.php';
+
+use Fworm\BaseModels\Pruebas;

@@ -16,50 +16,18 @@ abstract class MainModel
     /**
      * Constructor del modelo.
      */
-    public function __construct() {
-        global $wpdb;
-        $this->wpdb  = $wpdb;
-        # Seran gestiados por los disparadores (Trigger).
-        // $this->wpdb->show_errors = false;
-
-        # Definicion de tabla
-        $prefix = '';
-        if ( property_exists($this, 'prefix') ) {
-            if ( is_string($this->prefix) ) {
-                $prefix = $this->prefix;
-            } else if ( $this->prefix === true ) {
-                $prefix = $this->wpdb->prefix;
-            }
-        } else {
-            $prefix = $this->wpdb->prefix;
+    public function __construct() 
+    {
+        try {
+            $this->setProperties();
+        } catch (\Exception $exception) { ?>
+            <!-- <p>
+                <strong>Captured exception: </strong> <?=$exception->getMessage(); ?>
+            </p> -->
+            <script>
+                console.error( `Error (<?=WP_FWORM_NAME; ?>): <?=$exception->getMessage(); ?>` );
+            </script> <?php
         }
-        $this->table = $prefix . strtolower(
-            preg_replace(
-                "([A-Z])", 
-                "_$0",
-                lcfirst( 
-                    basename(static::class)
-                )
-            )
-        );
-        # Definicion de tabla
-        
-
-
-
-        $columnsRaw = $this->wpdb->get_results(
-            "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{$this->table}'", 
-        );
-
-        $attributes = [];
-        $columnsAs = []; # Usar
-        foreach ( $columnsRaw as $column ) {
-            $attributes[ $column->COLUMN_NAME ] = null;
-            $columnsAs[ $column->COLUMN_NAME ] = $column->COLUMN_NAME;
-            $this->columnsRaw[ $column->COLUMN_NAME ] = $column;
-        }
-        $this->attributes = (object) $attributes;
-        $this->columnsAs = (object) $columnsAs;
     }
 
     /**
@@ -102,6 +70,17 @@ abstract class MainModel
     public static function __callStatic($method, $parameters)
     {
         return (new static)->$method(...$parameters);
+    }
+
+    /**
+     * Maneja las llamadas a las propiedades del modelo.
+     * 
+     * @param  string $property
+     * @return mixed
+     */
+    public function __get( string $property ) : mixed
+    {
+        return ( property_exists($this, $property) ) ? $this->$property : null;
     }
 
 }
