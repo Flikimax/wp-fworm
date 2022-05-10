@@ -6,7 +6,7 @@ Está diseñado para permitirle añadir fácilmente nuevos modelos que no sean t
 
 #### Prerrequisitos
 
-- PHP 8
+- PHP ^8.0.2
 - Composer
 
 #### Instalación

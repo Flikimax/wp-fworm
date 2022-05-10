@@ -41,7 +41,7 @@ Trait Trigger
         
         return $this->results( 
             $this->output($output),
-            'buildSelect',
+            'buildQuery',
             [$hasWhere]
         );
     }
@@ -56,7 +56,7 @@ Trait Trigger
     {
         return $this->results( 
             $output,
-            'buildSelect',
+            'buildQuery',
             [false]
         );
     }
@@ -139,7 +139,7 @@ Trait Trigger
             return $result;
         }
 
-        if ( WP_DEBUG === true ) { ?>
+        if ( WP_DEBUG ) { ?>
             <p>
                 <strong>Error: </strong> <?=$this->wpdb->last_error; ?>
             </p>

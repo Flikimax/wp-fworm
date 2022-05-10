@@ -191,4 +191,19 @@ Trait Where
         return "$type({$where['column']}) {$where['operator']} '{$where['value']}' {$where['boolean']} ";
     }
 
+    /**
+     * Verifica si un where tiene una condición not.
+     *
+     * @param array $where 
+     * @return string
+     **/
+    protected function whereNotValidate( array $where ) : string
+    {
+        if ( !isset($where['not']) || $where['not'] === false ) {
+            return '';
+        }
+
+        return empty( $where['not'] ) ? '' : 'NOT';
+    }
+
 }

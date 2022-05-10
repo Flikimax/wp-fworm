@@ -8,7 +8,11 @@ namespace Fworm;
 
 abstract class MainModel 
 {
-    use \Fworm\MainModel\Where\Where,
+    use \Fworm\MainModel\General,
+        \Fworm\MainModel\Select,
+        \Fworm\MainModel\Where\Where,
+        \Fworm\MainModel\Limit,
+        \Fworm\MainModel\Offset,
         \Fworm\Builder\Query,
         \Fworm\Trigger,
         \Fworm\Properties;

@@ -9,6 +9,13 @@ namespace Fworm;
 Trait Properties
 {
     /**
+     * La tabla a la que se dirige la consulta.
+     * 
+     * @var string
+     */
+    protected string $table = '';
+
+    /**
      * Nombre de la columna que tenga la llave primaria de la tabla.
      * @var string
      */
@@ -49,14 +56,7 @@ Trait Properties
      * 
      * @var array
      */
-    protected array $columns;
-
-    /**
-     * La tabla a la que se dirige la consulta.
-     * 
-     * @var string
-     */
-    protected string $table = '';
+    protected array $columns = [];
 
     /**
      * La tabla joins para la consulta.
@@ -98,14 +98,14 @@ Trait Properties
      * 
      * @var int
      */
-    public int $limit;
+    public int $limit = 0;
 
     /**
      * El número de registros a omitir.
      * 
      * @var int
      */
-    public int $offset;
+    public int $offset = 0;
 
     /**
      * Las declaraciones de unión de la consulta.
