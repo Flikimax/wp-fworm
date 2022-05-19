@@ -1,6 +1,6 @@
 <?php
 /**
- * Modelo Posts
+ * Modelo Pruebas
  * 
  */
 
@@ -19,5 +19,7 @@ class Pruebas extends Model
     ];
 
     public int $limit = 3;
+    
+    public int $offset = 3;
 
 }

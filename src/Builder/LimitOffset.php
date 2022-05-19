@@ -9,7 +9,6 @@ namespace Fworm\Builder;
 Trait LimitOffset
 {
 
-
     /**
      * Agrega el limit para la consulta.
      *
@@ -27,16 +26,12 @@ Trait LimitOffset
      **/
     public function buildOffset() : string
     {
-        if ( !$this->limitOffset('limit') ) {
-            if ( WP_DEBUG ) {
-                throw new \Exception( "Para usar correctamente la función 'offset' se requiere de un limit." );
-            }
-            return '';
+        if ( $this->limitOffset('limit') ) {
+            return $this->limitOffset('offset');
         }
-
-        return $this->limitOffset('offset');
+        
+        return '';
     }
-
 
     /**
      * Construye el limit y/o el offset para la consulta.
