@@ -16,4 +16,9 @@ class Posts extends Model
         'ID' => 'id',
         'post_title' => 'Título',
     ];
+
+    # Opcional.
+    // public int $limit = 1;
+    # Opcional.
+    // public int $offset = 3;
 }

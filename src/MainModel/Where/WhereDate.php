@@ -28,7 +28,7 @@ Trait WhereDate
      * @param string       $boolean
      * @return $this
      */
-    protected function whereDay(string $column, array|string $operator = null, array|string $day = null, string $boolean = 'and') : object
+    protected function whereDay(string $column, array|string $operator = null, int|string $day = null, string $boolean = 'and') : object
     {
         return $this->whereGeneralDate('day', $column, $operator, $day, $boolean);
     }
@@ -128,10 +128,11 @@ Trait WhereDate
      * @param string       $boolean
      * @return $this
      */
-    protected function whereDateTime(string $column, array|string $operator = null, string $dateTime = null, string $boolean = 'and') : object
-    {
-        return $this->whereGeneralDate('datetime', $column, $operator, $dateTime, $boolean);
-    }
+    // TODO: Revisar esta función y su respectiva consulta.
+    // protected function whereDateTime(string $column, array|string $operator = null, string $dateTime = null, string $boolean = 'and') : object
+    // {
+    //     return $this->whereGeneralDate('datetime', $column, $operator, $dateTime, $boolean);
+    // }
     
     /**
      * Añade un where tipo TimeStamp para la consulta.
