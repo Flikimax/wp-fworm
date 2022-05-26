@@ -30,6 +30,16 @@ Trait Trigger
      */
 
     /**
+     * Retorna el query dependiendo la consulta configurada.
+     *
+     * @return null|string
+     **/
+    protected function query() : ?string
+    {
+        return $this->buildQuery();
+    }
+
+    /**
      * Retorna los datos dependiendo la consulta configurada.
      *
      * @param string $output
@@ -128,15 +138,33 @@ Trait Trigger
         return ( in_array($output, $this->outputs) ) ? $output : $this->output;
     }
 
+    /**
+     * Retorna los datos de la consulta o null en caso de error.
+     *
+     * @param string $output
+     * @param mixed $callbak
+     * @param array $args
+     * @return mixed
+     **/
     protected function results( string $output, $callbak, array $args = [] ) : mixed
     {
         $result = $this->wpdb->get_results( 
             $this->$callbak( ...$args ), 
             $output 
         );
+        
+        return $this->checkError() ? $result : null;
+    }
 
+    /**
+     * Se valida si la consulta tuvo algun error.
+     *
+     * @return bool
+     **/
+    private function checkError() : bool
+    {
         if ( $this->wpdb->last_error === '' ) {
-            return $result;
+            return true;
         }
 
         if ( WP_DEBUG ) { ?>
@@ -148,6 +176,7 @@ Trait Trigger
             </script>
         <?php }
 
-        return null;
+        return false;
     }
+
 }

@@ -18,8 +18,6 @@ class Pruebas extends Model
         'name' => 'Nombre',
     ];
 
-    public int $limit = 3;
-    
-    public int $offset = 3;
-
+    // public int $limit = 3;
+    // public int $offset = 3;
 }
