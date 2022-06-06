@@ -9,6 +9,7 @@ namespace Fworm;
 abstract class MainModel 
 {
     use \Fworm\MainModel\General,
+        \Fworm\MainModel\Union,
         \Fworm\MainModel\Select,
         \Fworm\MainModel\Where\Where,
         \Fworm\MainModel\Limit,

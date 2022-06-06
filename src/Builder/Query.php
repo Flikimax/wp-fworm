@@ -10,7 +10,8 @@ Trait Query
 {
     use Select,
         Where,
-        LimitOffset;
+        LimitOffset,
+        Union;
 
     protected function buildQuery( $where = true )
     {
@@ -32,6 +33,9 @@ Trait Query
         
         # Offset
         $this->query .= $this->buildOffset();
+
+        # Union
+        $this->query .= $this->buildUnion();
 
         $query = $this->query;
         $this->resetProperty('query');

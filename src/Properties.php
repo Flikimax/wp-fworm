@@ -112,7 +112,7 @@ Trait Properties
      * 
      * @var array
      */
-    public array $unions;
+    public array $unions = [];
 
     /**
      * El número máximo de registros de la unión a devolver.
