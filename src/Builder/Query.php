@@ -13,7 +13,43 @@ Trait Query
         LimitOffset,
         Union;
 
-    protected function buildQuery( $where = true )
+    /**
+     * Undocumented function long description
+     *
+     * @param string $type Tipo de Query.
+     * @param array  $args Parametros extras que se puedan llegar a requerir en cada tipo de query a construir.
+     * @return string $query La query construida.
+     * @throws \Exception Si no hay match con un tipo de query.
+     **/
+    protected function buildQuery( string $type, array $args = [] ) : string
+    {
+        $type = strtolower($type);
+        if ( $type === 'get' ) {
+            $this->buildQuerySelect( $args );
+        } else if ( $type === 'insert' ) {
+            $this->buildQueryInsert( $args );
+        } else if ( $type === 'update' ) {
+            
+        } else if ( $type === 'delete' ) {
+            
+        } else {
+            throw new \Exception( "The '{$type}' method does not exist." );
+        }
+
+        $query = $this->query;
+        $this->resetProperty('query');
+
+        return $query;
+    }
+    
+
+    /**
+     * Construye y retorna un query de tipo SELECT.
+     *
+     * @param array $args
+     * @return string
+     **/
+    protected function buildQuerySelect( array $args) : string
     {
         # Select
         $this->query = 'SELECT ' . $this->buildSelect();
@@ -22,9 +58,9 @@ Trait Query
         $this->query .= " FROM {$this->table} ";
 
         # Where
-        if ( $where ) {
+        if ( isset($args['hasWhere']) && $args['hasWhere'] ) {
             if ( $whereString = $this->buildWhere() ) {
-                $this->query .= 'WHERE ' . $this->buildWhere();
+                $this->query .= 'WHERE ' . $whereString;
             }
         }
 
@@ -37,10 +73,20 @@ Trait Query
         # Union
         $this->query .= $this->buildUnion();
 
-        $query = $this->query;
-        $this->resetProperty('query');
+        return $this->query;
+    }
 
-        return $query;
+    /**
+     * Construye y retorna un query de tipo INSERT.
+     *
+     * @param array $args
+     * @return string
+     **/
+    protected function buildQueryInsert( array $args ) : string
+    {
+        
+
+        return '';
     }
 
     # =============================== # 

@@ -115,34 +115,6 @@ Trait Properties
     public array $unions = [];
 
     /**
-     * El número máximo de registros de la unión a devolver.
-     * 
-     * @var int
-     */
-    public int $unionLimit;
-
-    /**
-     * El número de registros de la unión que hay que omitir.
-     * 
-     * @var int
-     */
-    public int $unionOffset;
-
-    /**
-     * Las ordenaciones para la consulta de la unión.
-     * 
-     * @var array
-     */
-    public array $unionOrders;
-
-    /**
-     * Las llamadas de retorno que deben ser invocadas antes de que se ejecute la consulta.
-     * 
-     * @var array
-     */
-    public array $beforeQueryCallbacks = [];
-
-    /**
      * Todos los operadores de cláusulas disponibles.
      * = : Igual
      * < : Menor que
