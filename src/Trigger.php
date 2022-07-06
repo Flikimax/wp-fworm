@@ -10,7 +10,8 @@ Trait Trigger
 {
     use \Fworm\Triggers\SelectTrigger,
         \Fworm\Triggers\InsertTrigger,
-        \Fworm\Triggers\UpdateTrigger;
+        \Fworm\Triggers\UpdateTrigger,
+        \Fworm\Triggers\DeleteTrigger;
 
     /**
      * @var string $output Tipo de salida de los datos: ARRAY_A | ARRAY_N | OBJECT | OBJECT_K.

@@ -30,6 +30,10 @@ Trait UpdateTrigger
             \Fworm\Trigger::getFormat($data, $format),
             \Fworm\Trigger::getFormat($where, $whereFormat)
         );
+
+        echo "<pre>";
+        var_dump( $validation );
+        echo "</pre>";
         
         $log = [];
         $log['error'] = false;
