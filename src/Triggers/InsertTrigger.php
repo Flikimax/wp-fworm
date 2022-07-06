@@ -11,12 +11,11 @@ Trait InsertTrigger
     /**
      * Inserta uno o multiples registros y retorna los datos de la consulta y en caso de error, lo especifica.
      *
-     * @param string $output
-     * @param mixed $callbak
-     * @param array $args
-     * @return int|false
+     * @param array $data
+     * @param array|string|null $format
+     * @return array
      **/
-    protected function insert( array $data = [], array|string $format = null ) : array|int|false
+    protected function insert( array $data = [], array|string|null $format = null ) : array
     {
         if ( ! $data || ! is_array($data) ) {
             return false;
@@ -60,39 +59,8 @@ Trait InsertTrigger
         return $this->wpdb->insert(
             $table,
             $data,
-            self::getFormat($data, $format)
+            \Fworm\Trigger::getFormat($data, $format)
         );
     }
-    
-    /**
-     * Obtiene el formato de un array de datos.
-     *
-     * %d (integer)
-     * %f (float)
-     * %s (string)
-     * 
-     * @param array $data
-     * @param array|null $format
-     * @return type
-     **/
-    public static function getFormat( array $data, ?array $format ) : ?array
-    {
-        if ( $format ) {
-            return $format;
-        }
-
-        $format = [];
-        foreach ( $data as $column => $value ) {
-            if ( is_integer($value) ) {
-                $format[] = '%d';
-            } else if ( is_float($value) ) {
-                $format[] = '%f';
-            } else {
-                $format[] = '%s';
-            }
-        }
-        return $format;
-    }
-
 
 }

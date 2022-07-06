@@ -9,7 +9,8 @@ namespace Fworm;
 Trait Trigger
 {
     use \Fworm\Triggers\SelectTrigger,
-        \Fworm\Triggers\InsertTrigger;
+        \Fworm\Triggers\InsertTrigger,
+        \Fworm\Triggers\UpdateTrigger;
 
     /**
      * @var string $output Tipo de salida de los datos: ARRAY_A | ARRAY_N | OBJECT | OBJECT_K.
@@ -61,6 +62,36 @@ Trait Trigger
         <?php }
 
         return false;
+    }
+
+    /**
+     * Obtiene el formato de un array de datos.
+     *
+     * %d (integer)
+     * %f (float)
+     * %s (string)
+     * 
+     * @param array $data
+     * @param array|null $format
+     * @return type
+     **/
+    public static function getFormat( array $data, ?array $format ) : ?array
+    {
+        if ( $format ) {
+            return $format;
+        }
+
+        $format = [];
+        foreach ( $data as $column => $value ) {
+            if ( is_integer($value) ) {
+                $format[] = '%d';
+            } else if ( is_float($value) ) {
+                $format[] = '%f';
+            } else {
+                $format[] = '%s';
+            }
+        }
+        return $format;
     }
 
 }

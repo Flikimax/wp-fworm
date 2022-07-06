@@ -4,7 +4,7 @@
 * Plugin Name: 	WP Fworm
 * Plugin URI: 	https://docs.wordpress-framework.com/docs/orm
 * Description:  ORM para manejar de forma fácil y sencilla los procesos correspondientes al manejo de bases de datos.
-* Version:      0.5
+* Version:      0.6
 * Author: 		Flikimax	
 * Author URI: 	https://flikimax.com
 * License: GPLv2 or later
