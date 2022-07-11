@@ -1,7 +1,7 @@
 {
     "name": "flikimax/wp-fworm",
     "description": "ORM para WordPress.",
-    "version": "0.7.1",
+    "version": "1.0",
     "keywords": [
         "wordpress",
         "wp",
@@ -22,7 +22,7 @@
         }
     },
 
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true,
     "config": {
         "sort-packages": true
